@@ -133,6 +133,20 @@ function test_service()
 }
 
 #==============================================================
+function create_debian_package()
+{
+	echo "creating .deb with checkinstall `date`"
+
+	cd /root/osrm-backend/cmake || return
+
+	REQUIRES="libboost-system1.54.0,libboost-filesystem1.54.0,libboost-program-options1.54.0,libboost-thread1.54.0,libexpat1,libluabind0.9.1,liblua5.2-0,libstxxl1,libtbb2"
+
+	checkinstall --pkgname osrm-backend --pkggroup geo --pkgsource "https://github.com/Project-OSRM/osrm-backend" --provides osrm-backend --requires "$REQUIRES" make install
+
+	echo "done. `date`"
+}
+
+#==============================================================
 #==============================================================
 
 echo "please read the script before proceeding."
@@ -146,7 +160,8 @@ echo "5: get_osm_data"
 echo "6: prepare_osm_data"
 echo "7: serve_osrm_data"
 echo "8: do tasks 4,5,6,7"
-echo "9: test service"
+echo "9: test_service"
+echo "10: create_debian_package"
 echo ""
 echo -n "proceed? ctrl+c to abort or choice (number): "
 read input
@@ -205,6 +220,12 @@ then
 	exit
 fi
 
+if [ x"$input" = "x10" ]
+then
+	create_debian_package
+	exit
+fi
+
 exit
 #==============================================================
 #==============================================================
@@ -219,6 +240,9 @@ prepare_and_do_build
 get_osm_data
 prepare_osm_data
 serve_osrm_data
+test_service
+create_debian_package
+
 
 [info] starting up engines, v4.9.0
 [info] populating base path: map.osrm
@@ -246,4 +270,5 @@ serve_osrm_data
 
 
 osrm-routed binary needs the following packages:
-apt-get -y install libboost-filesystem1.54.0 libboost-program-options1.54.0 libboost-thread1.54.0
+
+apt-get -y install libboost-system1.54.0 libboost-filesystem1.54.0 libboost-program-options1.54.0 libboost-thread1.54.0 libexpat1 libluabind0.9.1 liblua5.2-0 libstxxl1 libtbb2
