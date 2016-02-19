@@ -14,7 +14,7 @@ OSRM_PORT=8088
 OSM_PBF_URL="http://download.geofabrik.de/europe/switzerland-latest.osm.pbf"
 OSM_PBF_FILENAME="switzerland-latest.osm.pbf"
 
-MAKE_INSTALL_PREFIX="/usr"
+CMAKE_INSTALL_PREFIX="/usr"
 
 #==============================================================
 function init_build_env()
