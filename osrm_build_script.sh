@@ -141,7 +141,7 @@ function create_debian_package()
 
 	cd /root/osrm-backend/cmake || return
 
-	REQUIRES="libboost-system1.54.0,libboost-filesystem1.54.0,libboost-program-options1.54.0,libboost-thread1.54.0,libexpat1,libluabind0.9.1,liblua5.2-0,libstxxl1,libtbb2"
+	REQUIRES="libboost-system1.54.0,libboost-filesystem1.54.0,libboost-program-options1.54.0,libboost-thread1.54.0,libboost-regex1.54.0,libexpat1,libluabind0.9.1,liblua5.2-0,libstxxl1,libtbb2"
 
 	checkinstall --pkgname osrm-backend --pkggroup geo --pkgsource "https://github.com/Project-OSRM/osrm-backend" --provides osrm-backend --requires "$REQUIRES" make install
 
@@ -270,7 +270,3 @@ create_debian_package
 [info] http 1.1 compression handled by zlib version 1.2.8
 [info] running and waiting for requests
 
-
-osrm-routed binary needs the following packages:
-
-apt-get -y install libboost-system1.54.0 libboost-filesystem1.54.0 libboost-program-options1.54.0 libboost-thread1.54.0 libexpat1 libluabind0.9.1 liblua5.2-0 libstxxl1 libtbb2
