@@ -47,6 +47,8 @@ function login_build_env()
 #==============================================================
 function prepare_and_do_build()
 {
+	#we're supposed to be root
+
 	echo "preparing build `date`"
 
 	cd /root
