@@ -50,7 +50,7 @@ function prepare_and_do_build()
 	cd /root
 
 	#inside chroot:
-	apt-get -y install build-essential git autoconf automake libtool pkg-config wget unzip ed cmake ca-certificates ne dos2unix locate zip rsync
+	apt-get -y install build-essential git autoconf automake libtool pkg-config wget unzip ed cmake ca-certificates ne dos2unix locate zip rsync checkinstall
 	apt-get -y install libboost-all-dev libtbb-dev libluabind-dev libstxxl-dev libbz2-dev
 
 	#for ccache
@@ -241,3 +241,9 @@ serve_osrm_data
 [info] loaded plugin: trip
 [info] http 1.1 compression handled by zlib version 1.2.8
 [info] running and waiting for requests
+
+
+osrm-routed binary needs the following packages:
+apt-get install libboost-filesystem1.54.0
+apt-get install libboost-program-options1.54.0
+apt-get install libboost-thread1.54.0
