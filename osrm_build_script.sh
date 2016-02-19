@@ -14,6 +14,8 @@ OSRM_PORT=8088
 OSM_PBF_URL="http://download.geofabrik.de/europe/switzerland-latest.osm.pbf"
 OSM_PBF_FILENAME="switzerland-latest.osm.pbf"
 
+MAKE_INSTALL_PREFIX="/usr"
+
 #==============================================================
 function init_build_env()
 {
@@ -65,7 +67,7 @@ function prepare_and_do_build()
 	cd osrm-backend/cmake
 
 	#configure and build
-	time cmake .. && time make
+	time cmake -DCMAKE_INSTALL_PREFIX="$CMAKE_INSTALL_PREFIX" .. && time make
 
 	echo "done. `date`"
 }
@@ -244,6 +246,4 @@ serve_osrm_data
 
 
 osrm-routed binary needs the following packages:
-apt-get install libboost-filesystem1.54.0
-apt-get install libboost-program-options1.54.0
-apt-get install libboost-thread1.54.0
+apt-get -y install libboost-filesystem1.54.0 libboost-program-options1.54.0 libboost-thread1.54.0
