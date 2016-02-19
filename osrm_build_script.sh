@@ -11,8 +11,10 @@ FULLPATH="`pwd`/$0"
 DIR=`dirname "$FULLPATH"`
 
 OSRM_PORT=8088
-OSM_PBF_URL="http://download.geofabrik.de/europe/switzerland-latest.osm.pbf"
-OSM_PBF_FILENAME="switzerland-latest.osm.pbf"
+OSM_PBF_URL="http://download.geofabrik.de/europe/andorra-latest.osm.pbf"
+OSM_PBF_FILENAME="andorra-latest.osm.pbf"
+#OSM_PBF_URL="http://download.geofabrik.de/europe/switzerland-latest.osm.pbf"
+#OSM_PBF_FILENAME="switzerland-latest.osm.pbf"
 
 CMAKE_INSTALL_PREFIX="/usr"
 
@@ -61,9 +63,6 @@ function prepare_and_do_build()
 	mkdir -p /home/build
 	export HOME=/home/build
 
-	#for convenience
-	alias l='ls -ltr'
-
 	#get osrm software
 	git clone https://github.com/Project-OSRM/osrm-backend
 	cd osrm-backend/cmake
@@ -102,7 +101,7 @@ function prepare_osm_data()
 	cd /root/osrm-backend/cmake || return
 
 	#prepare for use
-	time ./osrm-extract -t 24 map.pbf && time ./osrm-prepare -t 24 map.osrm
+	time ./osrm-extract map.pbf && time ./osrm-prepare map.osrm
 
 	echo "done. `date`"
 }
@@ -149,6 +148,37 @@ function create_debian_package()
 }
 
 #==============================================================
+function test_debian_package_in_chroot()
+{
+	#we're supposed to be root
+
+	echo "testing debian package `date`"
+
+	cd /root
+
+	#inside chroot:
+	apt-get -y install git wget ne ca-certificates
+
+	#get osrm-bootstrap software
+	git clone https://github.com/7890/osrm-bootstrap
+	cd osrm-bootstrap/dist
+
+	./install.sh
+
+	wget "$OSM_PBF_URL"
+
+	#use default configuration
+	ln -s ../profiles/car.lua profile.lua
+
+	#indirection, all outputfiles will be named map.*
+	ln -s "$OSM_PBF_FILENAME" map.pbf
+
+	time osrm-extract map.pbf && time osrm-prepare map.osrm && osrm-routed --trial -p "$OSRM_PORT" map.osrm
+
+	echo "done. `date`"
+}
+
+#==============================================================
 #==============================================================
 
 echo "please read the script before proceeding."
@@ -164,6 +194,7 @@ echo "7: serve_osrm_data"
 echo "8: do tasks 4,5,6,7"
 echo "9: test_service"
 echo "10: create_debian_package"
+echo "11: test_debian_package_in_chroot"
 echo ""
 echo -n "proceed? ctrl+c to abort or choice (number): "
 read input
@@ -228,6 +259,12 @@ then
 	exit
 fi
 
+if [ x"$input" = "x11" ]
+then
+	test_debian_package_in_chroot
+	exit
+fi
+
 exit
 #==============================================================
 #==============================================================
@@ -269,4 +306,3 @@ create_debian_package
 [info] loaded plugin: trip
 [info] http 1.1 compression handled by zlib version 1.2.8
 [info] running and waiting for requests
-
