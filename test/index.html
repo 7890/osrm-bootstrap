@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OSRM Test</title>
+<!-- http://code.jquery.com/jquery-1.12.0.min.js -->
+<script src="jquery-1.12.0.min.js"></script>
+<script>
+/*var resource_to_load="http://127.0.0.1:8080/nearest?loc=47,8&compression=false";*/
+var OSRM_SERVER='http://127.0.0.1:8080';
+
+$(document).ready(function(){
+	$("#input_text_1").val("47,8");
+	$("button").click(function(){
+
+		var lat_lon=$("#input_text_1").val();
+		var resource_to_load=OSRM_SERVER+'/nearest?loc='+lat_lon+'&compression=false';
+
+		$.getJSON( resource_to_load, function( data ) {
+
+			$("#output_div_1").text(JSON.stringify(data));
+			$("#output_div_2").text(data["mapped_coordinate"]);
+
+			var items = [];
+			$.each( data, function( key, val ) {
+				console.log(key+" "+val);
+			});
+		});
+	});
+});
+
+</script>
+</head>
+	<body>
+		<h2>test osrm service 'nearest'</h2>
+		<p>lat,lon</p>
+		<input id="input_text_1"></input>
+		<button>query</button>
+		<div id="output_div_1"></div>
+		<div id="output_div_2" style="font-weight: bold"></div>
+	</body>
+</html>
