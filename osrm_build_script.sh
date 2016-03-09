@@ -23,10 +23,18 @@ function init_build_env()
 {
 	echo "creating build environment `date`"
 
-	sudo apt-get install cowbuilder util-linux
-	sudo mkdir -p /var/cache/pbuilder/trusty-amd64
+	arch_=`uname -m`
+	if [ x"$arch_"  = "xx86_64" ]
+	then
+		arch_handle=amd64
+	else
+		arch_handle=i386
+	fi
 
-	time sudo cowbuilder --create --basepath /var/cache/pbuilder/trusty-amd64/base.cow --distribution trusty --mirror "http://ch.archive.ubuntu.com/ubuntu/" --components "main universe" --debootstrapopts --arch --debootstrapopts amd64
+	sudo apt-get install cowbuilder util-linux
+	sudo mkdir -p /var/cache/pbuilder/trusty-${arch_handle}
+
+	time sudo cowbuilder --create --basepath /var/cache/pbuilder/trusty-${arch_handle}/base.cow --distribution trusty --mirror "http://ch.archive.ubuntu.com/ubuntu/" --components "main universe" --debootstrapopts --arch --debootstrapopts ${arch_handle}
 
 	echo "done. `date`"
 }
@@ -43,7 +51,7 @@ function login_build_env()
 {
 	echo "logging in to build environment"
 	#login
-	sudo cowbuilder --login --bindmounts /var/tmp --basepath /var/cache/pbuilder/trusty-amd64/base.cow
+	sudo cowbuilder --login --bindmounts /var/tmp --basepath /var/cache/pbuilder/trusty-${arch_handle}/base.cow
 }
 
 #==============================================================
@@ -64,7 +72,9 @@ function prepare_and_do_build()
 	export HOME=/home/build
 
 	#get osrm software
-	git clone https://github.com/Project-OSRM/osrm-backend
+#	git clone https://github.com/Project-OSRM/osrm-backend
+	#the official repo seems to be too new / does not compile anymore with current setup so using snapshot
+	git clone https://github.com/7890/osrm-backend
 	cd osrm-backend/cmake
 
 	#configure and build
