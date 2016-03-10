@@ -18,19 +18,20 @@ OSM_PBF_FILENAME="andorra-latest.osm.pbf"
 
 CMAKE_INSTALL_PREFIX="/usr"
 
+arch_=`uname -m`
+if [ x"$arch_"  = "xx86_64" ]
+then
+	arch_handle=amd64
+else
+	arch_handle=i386
+fi
+
 #==============================================================
 function init_build_env()
 {
 	echo "creating build environment `date`"
 
-	arch_=`uname -m`
-	if [ x"$arch_"  = "xx86_64" ]
-	then
-		arch_handle=amd64
-	else
-		arch_handle=i386
-	fi
-
+	echo $arch_handle
 	sudo apt-get install cowbuilder util-linux
 	sudo mkdir -p /var/cache/pbuilder/trusty-${arch_handle}
 
